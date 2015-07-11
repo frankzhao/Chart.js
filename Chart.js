@@ -67,6 +67,9 @@
 			// Boolean - If we should show the scale at all
 			showScale: true,
 
+			// Boolean or a positive integer denoting number of labels to be shown on x axis
+			showXLabels: true,
+
 			// Boolean - If we want to override with a hard coded scale
 			scaleOverride: false,
 
@@ -1662,6 +1665,9 @@
 
 				},this);
 
+				//  Show only specified number of labels to save space if there is a lot of data
+				this.xLabelsSkipper = isNumber(this.showXLabels) ? Math.ceil(this.xLabels.length/this.showXLabels) : (this.showXLabels === true) ? 1 : this.xLabels.length+1;
+
 				each(this.xLabels,function(label,index){
 					var xPos = this.calculateX(index) + aliasPixel(this.lineWidth),
 						// Check to see if line/bar here and decide where to place the line
@@ -1713,7 +1719,10 @@
 					ctx.font = this.font;
 					ctx.textAlign = (isRotated) ? "right" : "center";
 					ctx.textBaseline = (isRotated) ? "middle" : "top";
-					ctx.fillText(label, 0, 0);
+					//ctx.fillText(label, 0, 0);
+		  if(index % this.xLabelsSkipper === 0) {
+			ctx.fillText(label, 0, 0);
+		  }
 					ctx.restore();
 				},this);
 
@@ -2231,6 +2240,7 @@
 					helpers.extend(this, updatedRanges);
 				},
 				xLabels : labels,
+		showXLabels: (this.options.showXLabels) ? this.options.showXLabels : true,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
@@ -2702,6 +2712,7 @@
 					helpers.extend(this, updatedRanges);
 				},
 				xLabels : labels,
+		showXLabels: (this.options.showXLabels) ? this.options.showXLabels : true,
 				font : helpers.fontString(this.options.scaleFontSize, this.options.scaleFontStyle, this.options.scaleFontFamily),
 				lineWidth : this.options.scaleLineWidth,
 				lineColor : this.options.scaleLineColor,
